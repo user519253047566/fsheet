@@ -77,7 +77,7 @@
     <h2>Add Transaction</h2>
     <form id="transactionForm">
       <label for="date">Date:</label>
-      <input type="text" id="date" name="date" required readonly><br><br>
+      <input type="text" id="date" name="date" required><br><br>
 
       <label for="category">Category:</label>
       <input type="text" id="category" name="category" required><br><br>
@@ -98,7 +98,6 @@
   </div>
 
   <script>
-    // Format the date as "30-Oct-2024"
     function formatDate() {
       const today = new Date();
       const options = { day: '2-digit', month: 'short', year: 'numeric' };
@@ -109,30 +108,26 @@
     document.getElementById('date').value = formatDate();
 
     async function submitTransaction() {
-      const url = 'https://script.google.com/macros/s/AKfycbymbFDzBd4iZcZGj0_WGBr44AwjAffCAtRq_s5PA6gMDI9fnXZ75FUEyjcN2uVSu_G1NA/exec';  // Replace with the Apps Script Web App URL
-
-      const formData = {
-        date: document.getElementById('date').value,
-        category: document.getElementById('category').value,
-        description: document.getElementById('description').value,
-        account: document.getElementById('account').value,
-        amount: parseFloat(document.getElementById('amount').value)
-      };
+      const url = 'https://script.google.com/macros/s/AKfycbwbyJHTA2y6xLEa7L4v17iJFsLPHeaBdnyFwGdNpBXOn0ggRDmXvk0ay5o1Rihh10EPdg/exec' + 
+        `?date=${encodeURIComponent(document.getElementById('date').value)}` + 
+        `&category=${encodeURIComponent(document.getElementById('category').value)}` + 
+        `&description=${encodeURIComponent(document.getElementById('description').value)}` + 
+        `&account=${encodeURIComponent(document.getElementById('account').value)}` + 
+        `&amount=${encodeURIComponent(parseFloat(document.getElementById('amount').value))}`;
 
       try {
         const response = await fetch(url, {
-          redirect: 'follow',
-          method: 'POST',
-          body: JSON.stringify(formData),
-          headers: {
-            'Content-Type': 'application/json'
-          }
+          method: 'GET' // Use GET instead of POST
         });
 
-        const result = await response.json();
-        document.getElementById('responseMessage').textContent = "Transaction added successfully!";
-        document.getElementById('transactionForm').reset();
-        document.getElementById('date').value = formatDate(); // Reset the date after form submission
+        if (response.ok) {
+          const result = await response.text(); // You can change to .json() if you return JSON
+          document.getElementById('responseMessage').textContent = "Transaction added successfully!";
+          document.getElementById('transactionForm').reset();
+          document.getElementById('date').value = formatDate(); // Reset the date after form submission
+        } else {
+          document.getElementById('responseMessage').textContent = "Error adding transaction.";
+        }
       } catch (error) {
         document.getElementById('responseMessage').textContent = "Error adding transaction.";
       }
