@@ -109,7 +109,7 @@
     document.getElementById('date').value = formatDate();
 
     async function submitTransaction() {
-      const url = 'https://script.google.com/macros/s/AKfycbxCd4LEOn7_00JnnfqMcLtjvTPrwzyTpiqFAdkPEABieR8wqOUeOknqrMpxG-TVHdm1Tg/exec';  // Replace with the Apps Script Web App URL
+      const url = 'https://script.google.com/macros/s/AKfycbymbFDzBd4iZcZGj0_WGBr44AwjAffCAtRq_s5PA6gMDI9fnXZ75FUEyjcN2uVSu_G1NA/exec';  // Replace with the Apps Script Web App URL
 
       const formData = {
         date: document.getElementById('date').value,
@@ -121,6 +121,7 @@
 
       try {
         const response = await fetch(url, {
+          redirect: 'follow',
           method: 'POST',
           body: JSON.stringify(formData),
           headers: {
