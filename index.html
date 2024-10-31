@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Transaction Form</title>
+  <style>
+    /* Styling for the container */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .form-container {
+      background-color: #ffffff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      max-width: 400px;
+      width: 90%;
+    }
+
+    /* Input styling */
+    label {
+      font-weight: bold;
+      display: block;
+      margin: 10px 0 5px;
+    }
+
+    input[type="text"],
+    input[type="date"],
+    input[type="number"] {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+      font-size: 16px;
+    }
+
+    /* Button styling */
+    button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 15px;
+      background-color: #4CAF50;
+      color: #ffffff;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    /* Message styling */
+    #responseMessage {
+      margin-top: 15px;
+      font-size: 16px;
+      text-align: center;
+      color: #4CAF50;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="form-container">
+    <h2>Add Transaction</h2>
+    <form id="transactionForm">
+      <label for="date">Date:</label>
+      <input type="text" id="date" name="date" required readonly><br><br>
+
+      <label for="category">Category:</label>
+      <input type="text" id="category" name="category" required><br><br>
+
+      <label for="description">Description:</label>
+      <input type="text" id="description" name="description" required><br><br>
+
+      <label for="account">Account:</label>
+      <input type="text" id="account" name="account" required><br><br>
+
+      <label for="amount">Amount:</label>
+      <input type="number" id="amount" name="amount" step="0.01" required><br><br>
+
+      <button type="button" onclick="submitTransaction()">Submit</button>
+    </form>
+
+    <p id="responseMessage"></p>
+  </div>
+
+  <script>
+    // Format the date as "30-Oct-2024"
+    function formatDate() {
+      const today = new Date();
+      const options = { day: '2-digit', month: 'short', year: 'numeric' };
+      return today.toLocaleDateString('en-GB', options).replace(/ /g, '-');
+    }
+
+    // Set the formatted date as the default value in the date field
+    document.getElementById('date').value = formatDate();
+
+    async function submitTransaction() {
+      const url = 'https://script.google.com/macros/s/AKfycbxCd4LEOn7_00JnnfqMcLtjvTPrwzyTpiqFAdkPEABieR8wqOUeOknqrMpxG-TVHdm1Tg/exec';  // Replace with the Apps Script Web App URL
+
+      const formData = {
+        date: document.getElementById('date').value,
+        category: document.getElementById('category').value,
+        description: document.getElementById('description').value,
+        account: document.getElementById('account').value,
+        amount: parseFloat(document.getElementById('amount').value)
+      };
+
+      try {
+        const response = await fetch(url, {
+          method: 'POST',
+          body: JSON.stringify(formData),
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        const result = await response.json();
+        document.getElementById('responseMessage').textContent = "Transaction added successfully!";
+        document.getElementById('transactionForm').reset();
+        document.getElementById('date').value = formatDate(); // Reset the date after form submission
+      } catch (error) {
+        document.getElementById('responseMessage').textContent = "Error adding transaction.";
+      }
+    }
+  </script>
+
+</body>
+</html>
