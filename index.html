@@ -45,8 +45,10 @@
             width: 100%;
         }
         button:disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
+            background-color: #ccc; /* Light gray background */
+            color: #666; /* Darker gray text */
+            cursor: not-allowed; /* Show 'not-allowed' cursor */
+            opacity: 0.6; /* Reduce opacity */
         }
         #prefillButton {
             background-color: #007BFF;
@@ -99,6 +101,10 @@
         .radio-option input[type="radio"] {
             margin-right: 5px;
         }
+        .strike-through {
+            text-decoration: line-through;
+            color: gray;
+        }
     </style>
 </head>
 <body>
@@ -106,9 +112,21 @@
 <div class="container">
     <h2>Add Transaction</h2>
     <form id="transactionForm">
-        
-        <label for="date">Date</label>
-        <input type="text" id="date" name="date" value="">
+
+        <label for="amount">Amount</label>
+        <input type="number" id="amount" name="amount" step=".01" required>
+
+        <label for="account">Account</label>
+        <select id="account" name="account" required>
+            <option value="Titanium Credit Card">Titanium Credit Card</option>
+            <option value="Maya Wallet">Maya Wallet</option>
+            <option value="Maya bank">Maya bank</option>
+            <option value="GCash">GCash</option>
+            <option value="Cash On Hand">Cash On Hand</option>
+            <option value="BPI Payroll">BPI Payroll</option>
+            <option value="Metrobank Credit Card">Metrobank Credit Card</option>
+            <option value="Security bank CC">Security bank CC</option>
+        </select>
 
         <label for="category">Category</label>
         <select id="category" name="category" required>
@@ -123,21 +141,9 @@
 
         <label for="description">Description</label>
         <input type="text" id="description" name="description" required>
-
-        <label for="account">Account</label>
-        <select id="account" name="account" required>
-            <option value="Titanium Credit Card">Titanium Credit Card</option>
-            <option value="Maya Wallet">Maya Wallet</option>
-            <option value="Maya bank">Maya bank</option>
-            <option value="GCash">GCash</option>
-            <option value="Cash On Hand">Cash On Hand</option>
-            <option value="BPI Payroll">BPI Payroll</option>
-            <option value="Metrobank Credit Card">Metrobank Credit Card</option>
-            <option value="Security bank CC">Security bank CC</option>
-        </select>
-
-        <label for="amount">Amount</label>
-        <input type="number" id="amount" name="amount" step=".01" required>
+        
+        <label for="date">Date</label>
+        <input type="text" id="date" name="date" value="">
 
         <button type="submit" id="submitButton">Submit</button>
         <div class="loading" id="loading">Submitting...</div>
@@ -180,12 +186,35 @@
     const modal = document.getElementById('prefillModal');
     const radioOptionsDiv = document.getElementById('radioOptions');
     const modalSubmitButton = document.getElementById('modalSubmitButton');
+    const APP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw1sf03DauAKJ7dNGd4x7rHf2C1EdAmvvmlCeM5aAS-4H35jKmXx6C1dfxPYnHVoq1pjg/exec?';
+    let transactionData;
 
+    // Retrieve data on initial load
+    window.onload = function() {
+        const today = new Date();
+        const month = String(today.getMonth() + 1).padStart(2, '0'); // MM format
+        const year = today.getFullYear(); // YYYY format
+
+        // Set date field default to today in YYYY-MM-DD format
+        document.getElementById("date").value = today.toISOString().split('T')[0];
+
+        const url = `${APP_SCRIPT_URL}action=retrieve&month=${month}&year=${year}`;
+
+        fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            transactionData = data;
+        })
+        .catch(error => console.error("Error fetching data:", error));
+    };
+    
     // Show modal with options on Prefill button click
     prefillButton.addEventListener('click', () => {
         radioOptionsDiv.innerHTML = ''; // Clear previous options
         prefillData.forEach((item, index) => {
-            const optionDiv = document.createElement('div');
+            let match = transactionData && transactionData.some(row => row.description === item.description);
+            let optionDiv = document.createElement('div');
+            optionDiv.className = match ? "strike-through" : "";
             optionDiv.classList.add('radio-option');
             optionDiv.innerHTML = `
                 <input type="radio" id="option${index}" name="prefillOption" value="${index}">
@@ -216,18 +245,19 @@
         event.preventDefault();
 
         const submitButton = document.getElementById('submitButton');
-        const loadingIndicator = document.getElementById('loading');
+        const prefillButton = document.getElementById('prefillButton');
 
         // Disable the button and show loading indicator
         submitButton.disabled = true;
-        loadingIndicator.style.display = 'block';
+        prefillButton.disabled = true;
 
         // Prepare the form data
         const formData = new FormData(event.target);
+        formData.append("action", "submit");
         const params = new URLSearchParams(formData).toString();
 
         // Send the request to the Google Apps Script web app
-        fetch('https://script.google.com/macros/s/AKfycbwbyJHTA2y6xLEa7L4v17iJFsLPHeaBdnyFwGdNpBXOn0ggRDmXvk0ay5o1Rihh10EPdg/exec?' + params)
+        fetch(APP_SCRIPT_URL + params)
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
@@ -244,7 +274,7 @@
             .finally(() => {
                 // Re-enable the button and hide loading indicator
                 submitButton.disabled = false;
-                loadingIndicator.style.display = 'none';
+                prefillButton.disabled = false;
             });
     });
 </script>
