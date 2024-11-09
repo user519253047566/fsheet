@@ -32,6 +32,8 @@
             margin-bottom: 10px;
             border: 1px solid #ccc;
             border-radius: 4px;
+            box-sizing: border-box; /* Ensures padding and border are included in width */
+            appearance: none; /* Standardizes select dropdown styling across browsers */
         }
         button {
             background-color: #4CAF50;
@@ -159,10 +161,19 @@
 
     // Prefill data options
     const prefillData = [
-        { category: "Necessities", description: "[10] Pagibig", account: "Maya bank", amount: -5720 },
-        { category: "Necessities", description: "[1] Pay Titanium", account: "Maya bank", amount: 0 },
-        { category: "Groceries", description: "[3] Weekly Shopping", account: "Cash On Hand", amount: -1500 },
-        { category: "Income", description: "[5] Freelance Payment", account: "BPI Payroll", amount: 5000 }
+        { category: "Necessities", description: "a. Pay Titanium [1]", account: "Maya bank", amount: 0 },
+        { category: "Discretionary", description: "b. Netflix [3]", account: "Maya bank", amount: -399 },
+        { category: "Necessities", description: "c. Pagibig [10]", account: "Maya bank", amount: -5720 },
+        { category: "Necessities", description: "d. Pagibig MP2 [10]", account: "Maya bank", amount: -10500 },
+        { category: "Discretionary", description: "e. Youtube Premium [11]", account: "Maya Wallet", amount: -379 },
+        { category: "Necessities", description: "f. Insurance [12]", account: "Titanium Credit Card", amount: -3920 },
+        { category: "Necessities", description: "g. Condo Water [15]", account: "BPI Payroll", amount: -750 },
+        { category: "Necessities", description: "h. Converge [20]", account: "BPI Payroll", amount: -1500 },
+        { category: "Necessities", description: "i. Security Bank [25]", account: "Maya bank", amount: -19000 },
+        { category: "Necessities", description: "j. Pay MECO [27]", account: "Titanium Credit Card", amount: -1500 },
+        { category: "Necessities", description: "k. Pay VECO [27]", account: "Titanium Credit Card", amount: -1250 },
+        { category: "Necessities", description: "l. Pay Condo Net [27]", account: "Titanium Credit Card", amount: -1699 },
+        { category: "Necessities", description: "m. Buy USANA [27]", account: "GCash", amount: -6600 }
     ];
 
     const prefillButton = document.getElementById('prefillButton');
