@@ -150,7 +150,6 @@
         <input type="text" id="date" name="date" value="">
 
         <button type="submit" id="submitButton">Submit</button>
-        <div class="loading" id="loading">Submitting...</div>
         <button type="button" id="templateButton">Templates</button>
         <button type="button" id="prefillButton">Prefill</button>
     </form>
@@ -228,11 +227,12 @@
         document.getElementById("date").value = today.toISOString().split('T')[0];
 
         const url = `${APP_SCRIPT_URL}action=retrieve&month=${month}&year=${year}`;
-
+		prefillButton.innerHTML = 'Prefill (Loading)';
         fetch(url)
         .then(response => response.json())
         .then(data => {
             transactionData = data;
+			prefillButton.innerHTML = 'Prefill';
         })
         .catch(error => console.error("Error fetching data:", error));
     };
@@ -296,6 +296,7 @@
         // Disable the button and show loading indicator
         submitButton.disabled = true;
         prefillButton.disabled = true;
+        templateButton.disabled = true;
 
         // Prepare the form data
         const formData = new FormData(event.target);
@@ -321,6 +322,7 @@
                 // Re-enable the button and hide loading indicator
                 submitButton.disabled = false;
                 prefillButton.disabled = false;
+                templateButton.disabled = false;
             });
     });
 </script>
