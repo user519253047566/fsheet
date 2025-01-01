@@ -54,6 +54,10 @@
             background-color: #007BFF;
             margin-top: 15px; /* Added top padding */
         }
+        #templateButton {
+            background-color: #007BFF;
+            margin-top: 15px; /* Added top padding */
+        }
         #submitButton {
             background-color: #4CAF50;
             margin-top: 10px;
@@ -147,8 +151,8 @@
 
         <button type="submit" id="submitButton">Submit</button>
         <div class="loading" id="loading">Submitting...</div>
-        <button type="button" id="prefillButton">Prefill</button>
         <button type="button" id="templateButton">Templates</button>
+        <button type="button" id="prefillButton">Prefill</button>
     </form>
 </div>
 
@@ -170,8 +174,8 @@
     const prefillData = [
         { category: "Transfer", description: "a. Pay Titanium [1]", account: "Maya bank", amount: 0 },
         { category: "Discretionary", description: "b. Netflix [3]", account: "Maya bank", amount: -399 },
-        { category: "Transfer", description: "c. Pagibig [10]", account: "Maya bank", amount: -5720 },
-        { category: "Transfer", description: "d. Pagibig MP2 [10]", account: "Maya bank", amount: -10500 },
+        { category: "Transfer", description: "c. Pagibig [10]", account: "Maya bank", amount: 0 },
+        { category: "Transfer", description: "d. Pagibig MP2 [10]", account: "Maya bank", amount: 0 },
         { category: "Discretionary", description: "e. Youtube Premium [11]", account: "Maya Wallet", amount: -379 },
         { category: "Necessities", description: "f. Insurance [12]", account: "Titanium Credit Card", amount: -3920 },
         { category: "Necessities", description: "g. Condo Water [15]", account: "BPI Payroll", amount: -750 },
@@ -180,15 +184,39 @@
         { category: "Necessities", description: "j. Pay MECO [27]", account: "Titanium Credit Card", amount: -1500 },
         { category: "Necessities", description: "k. Pay VECO [27]", account: "Titanium Credit Card", amount: -1250 },
         { category: "Necessities", description: "l. Pay Condo Net [27]", account: "Titanium Credit Card", amount: -1699 },
-        { category: "Necessities", description: "m. Buy USANA [27]", account: "GCash", amount: -6600 }
+        { category: "Necessities", description: "m. Buy USANA [27]", account: "GCash", amount: -6600 },
+        { category: "Necessities", description: "n. Car loan deposit [28]", account: "GCash", amount: 0 },
+        { category: "Necessities", description: "o. Clean Grease Trap [28]", account: "GCash", amount: 0 },
+        { category: "Necessities", description: "p. Clean CR [29]", account: "GCash", amount: 0 },
+        { category: "Necessities", description: "q. Vacuum bed [30]", account: "GCash", amount: 0 },
+        { category: "Necessities", description: "r. Pay Metrobank [30]", account: "Maya bank", amount: 0 },
+    ];
+	
+    // Templates data options
+    const templateData = [
+        { category: "Laundry", description: "Laundry", account: "Titanium Credit Card", amount: -270 },
+        { category: "Transfer", description: "Maya Cashin", account: "Maya bank", amount: -500 },
+        { category: "Transfer", description: "Maya Cashin", account: "Maya Wallet", amount: 500 },
+        { category: "Transfer", description: "Cash withdrawal", account: "BPI Payroll", amount: -1900 },
+        { category: "Transfer", description: "Cash withdrawal", account: "Cash On Hand", amount: 1900 },
+        { category: "Groceries", description: "Metro Grocery", account: "Titanium Credit Card", amount: -2000 },
+        { category: "Groceries", description: "Cloudkart Grocery", account: "Maya Wallet", amount: -2000 },
+        { category: "Groceries", description: "Merrymart Grocery", account: "Titanium Credit Card", amount: -200 },
+        { category: "Discretionary", description: "Grabfood", account: "Maya Wallet", amount: -300 },
+        { category: "Discretionary", description: "Grabcar", account: "Maya Wallet", amount: -200 },
+        { category: "Discretionary", description: "Move it", account: "GCash", amount: -50 },
+        { category: "Discretionary", description: "Angkas", account: "Maya Wallet", amount: -50 },
+        { category: "Discretionary", description: "Cash purchase", account: "Cash On Hand", amount: -100 },
     ];
 
     const prefillButton = document.getElementById('prefillButton');
+    const templateButton = document.getElementById('templateButton');
     const modal = document.getElementById('prefillModal');
     const radioOptionsDiv = document.getElementById('radioOptions');
     const modalSubmitButton = document.getElementById('modalSubmitButton');
     const APP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw1sf03DauAKJ7dNGd4x7rHf2C1EdAmvvmlCeM5aAS-4H35jKmXx6C1dfxPYnHVoq1pjg/exec?';
     let transactionData;
+	let isPrefill;
 
     // Retrieve data on initial load
     window.onload = function() {
@@ -211,11 +239,28 @@
     
     // Show modal with options on Prefill button click
     prefillButton.addEventListener('click', () => {
+		isPrefill = true;
         radioOptionsDiv.innerHTML = ''; // Clear previous options
         prefillData.forEach((item, index) => {
             let match = transactionData && transactionData.some(row => row.description === item.description);
             let optionDiv = document.createElement('div');
             optionDiv.className = match ? "strike-through" : "";
+            optionDiv.classList.add('radio-option');
+            optionDiv.innerHTML = `
+                <input type="radio" id="option${index}" name="prefillOption" value="${index}">
+                <label for="option${index}">${item.description} (${item.account}, ${item.amount})</label>
+            `;
+            radioOptionsDiv.appendChild(optionDiv);
+        });
+        modal.style.display = 'flex'; // Show modal
+    });
+	
+    // Show modal with options on Prefill button click
+    templateButton.addEventListener('click', () => {
+		isPrefill = false;
+        radioOptionsDiv.innerHTML = ''; // Clear previous options
+        templateData.forEach((item, index) => {
+            let optionDiv = document.createElement('div');
             optionDiv.classList.add('radio-option');
             optionDiv.innerHTML = `
                 <input type="radio" id="option${index}" name="prefillOption" value="${index}">
@@ -231,7 +276,7 @@
         const selectedOption = document.querySelector('input[name="prefillOption"]:checked');
         if (selectedOption) {
             const selectedIndex = parseInt(selectedOption.value);
-            const selectedData = prefillData[selectedIndex];
+            const selectedData = isPrefill? prefillData[selectedIndex] : templateData[selectedIndex];
 
             // Populate the form fields
             document.getElementById('category').value = selectedData.category;
