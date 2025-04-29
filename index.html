@@ -152,7 +152,8 @@
 
         <button type="submit" id="submitButton">Submit</button>
         <button type="button" id="templateButton">Templates</button>
-        <button type="button" id="prefillButton">Prefill</button>
+        <button type="button" id="prefillButton">Checklist</button>
+    	<label for="reminder" id="reminder"></label>
     </form>
 </div>
 
@@ -169,44 +170,46 @@
 <script>
     // Set the default date to today in dd-MMM-yyyy format
     document.getElementById('date').value = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+    document.getElementById('reminder').innerHTML = (new Date().getDate() % 2 === 0) ? 'reminder: lift' : 'reminder: 10K steps';
+
 
     // Prefill data options
     const prefillData = [
-        { category: "Transfer", description: "a. Pay Titanium [1]", account: "Maya bank", amount: 0 },
-        { category: "Discretionary", description: "b. Netflix [3]", account: "Maya bank", amount: -399 },
-        { category: "Transfer", description: "c. Pagibig [10]", account: "Maya bank", amount: 0 },
-        { category: "Transfer", description: "d. Pagibig MP2 [10]", account: "Maya bank", amount: 0 },
-        { category: "Discretionary", description: "e. Youtube Premium [11]", account: "Maya Wallet", amount: -379 },
-        { category: "Necessities", description: "f. Insurance [12]", account: "Titanium Credit Card", amount: -3920 },
-        { category: "Necessities", description: "g. Condo Water [15]", account: "BPI Payroll", amount: -750 },
-        { category: "Necessities", description: "h. Converge [20]", account: "BPI Payroll", amount: -1500 },
-        { category: "Necessities", description: "i. Security Bank [25]", account: "Maya bank", amount: -19000 },
-        { category: "Necessities", description: "j. Pay MECO [27]", account: "Titanium Credit Card", amount: -1500 },
-        { category: "Necessities", description: "k. Pay VECO [27]", account: "Titanium Credit Card", amount: -1250 },
-        { category: "Necessities", description: "l. Pay Condo Net [27]", account: "Titanium Credit Card", amount: -1699 },
-        { category: "Necessities", description: "m. Buy USANA [27]", account: "GCash", amount: -6600 },
-        { category: "Necessities", description: "n. Car loan deposit [28]", account: "GCash", amount: 0 },
-        { category: "Necessities", description: "o. Clean Grease Trap [28]", account: "GCash", amount: 0 },
-        { category: "Necessities", description: "p. Clean CR [29]", account: "GCash", amount: 0 },
-        { category: "Necessities", description: "q. Vacuum bed [30]", account: "GCash", amount: 0 },
-        { category: "Necessities", description: "r. Pay Metrobank [30]", account: "Maya bank", amount: 0 },
+        { category: "Discretionary", description: "Netflix [3]", account: "Maya bank", amount: -399 },
+        { category: "Transfer", description: "Pagibig [10]", account: "Maya bank", amount: 0 },
+        { category: "Transfer", description: "Pagibig MP2 [10]", account: "Maya bank", amount: 0 },
+        { category: "Discretionary", description: "Youtube Premium [11]", account: "Maya Wallet", amount: -379 },
+        { category: "Necessities", description: "Insurance [12]", account: "Titanium Credit Card", amount: -3920 },
+        { category: "Necessities", description: "Condo Water [15]", account: "BPI Payroll", amount: -750 },
+        { category: "Necessities", description: "Clean Grease Trap [15]", account: "GCash", amount: 0 },
+        { category: "Necessities", description: "Converge [20]", account: "BPI Payroll", amount: -1500 },
+        { category: "Necessities", description: "Security Bank [25]", account: "Maya bank", amount: -19000 },
+        { category: "Necessities", description: "Car loan deposit [25]", account: "GCash", amount: 0 },
+        { category: "Necessities", description: "Pay Metrobank [26]", account: "Maya bank", amount: 0 },
+        { category: "Transfer", description: "Pay Titanium [26]", account: "Maya bank", amount: 0 },
+        { category: "Necessities", description: "Pay MECO [27]", account: "Titanium Credit Card", amount: -1500 },
+        { category: "Necessities", description: "Pay VECO [27]", account: "Titanium Credit Card", amount: -1250 },
+        { category: "Necessities", description: "Pay Condo Net [27]", account: "Titanium Credit Card", amount: -1699 },
+        { category: "Necessities", description: "Clean CR [28]", account: "GCash", amount: 0 },
+        { category: "Necessities", description: "Vacuum bed [28]", account: "GCash", amount: 0 },
     ];
 	
     // Templates data options
     const templateData = [
-        { category: "Laundry", description: "Laundry", account: "Titanium Credit Card", amount: -270 },
+        { category: "Discretionary", description: "Grabfood", account: "Maya Wallet", amount: -300 },
         { category: "Transfer", description: "Maya Cashin", account: "Maya bank", amount: -500 },
         { category: "Transfer", description: "Maya Cashin", account: "Maya Wallet", amount: 500 },
-        { category: "Transfer", description: "Cash withdrawal", account: "BPI Payroll", amount: -1900 },
-        { category: "Transfer", description: "Cash withdrawal", account: "Cash On Hand", amount: 1900 },
-        { category: "Groceries", description: "Metro Grocery", account: "Titanium Credit Card", amount: -2000 },
         { category: "Groceries", description: "Cloudkart Grocery", account: "Maya Wallet", amount: -2000 },
         { category: "Groceries", description: "Merrymart Grocery", account: "Titanium Credit Card", amount: -200 },
-        { category: "Discretionary", description: "Grabfood", account: "Maya Wallet", amount: -300 },
+        { category: "Laundry", description: "Laundry", account: "Titanium Credit Card", amount: -290 },
+        { category: "Groceries", description: "Water", account: "GCash", amount: -100 },
+        { category: "Groceries", description: "Metro Grocery", account: "Titanium Credit Card", amount: -2000 },
         { category: "Discretionary", description: "Grabcar", account: "Maya Wallet", amount: -200 },
         { category: "Discretionary", description: "Move it", account: "GCash", amount: -50 },
         { category: "Discretionary", description: "Angkas", account: "Maya Wallet", amount: -50 },
         { category: "Discretionary", description: "Cash purchase", account: "Cash On Hand", amount: -100 },
+        { category: "Transfer", description: "Cash withdrawal", account: "BPI Payroll", amount: -1900 },
+        { category: "Transfer", description: "Cash withdrawal", account: "Cash On Hand", amount: 1900 },
     ];
 
     const prefillButton = document.getElementById('prefillButton');
