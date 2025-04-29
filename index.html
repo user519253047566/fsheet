@@ -148,12 +148,14 @@
         <input type="text" id="description" name="description" required>
         
         <label for="date">Date</label>
-        <input type="text" id="date" name="date" value="">
+        <input type="text" id="date" name="date" value="">   
+     
+        <label for="reminder">Reminder</label>
+        <input type="text" id="reminder" name="reminder" value="">
 
         <button type="submit" id="submitButton">Submit</button>
         <button type="button" id="templateButton">Templates</button>
         <button type="button" id="prefillButton">Checklist</button>
-    	<label for="reminder" id="reminder"></label>
     </form>
 </div>
 
@@ -170,7 +172,7 @@
 <script>
     // Set the default date to today in dd-MMM-yyyy format
     document.getElementById('date').value = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
-    document.getElementById('reminder').innerHTML = (new Date().getDate() % 2 === 0) ? 'reminder: lift' : 'reminder: 10K steps';
+    document.getElementById('reminder').value = (new Date().getDate() % 2 === 0) ? 'lift' : '10K';
 
 
     // Prefill data options
