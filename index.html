@@ -231,12 +231,12 @@
         document.getElementById("date").value = today.toISOString().split('T')[0];
 
         const url = `${APP_SCRIPT_URL}action=retrieve&month=${month}&year=${year}`;
-		prefillButton.innerHTML = 'Prefill (Loading)';
+		prefillButton.innerHTML = 'Checklist (Loading)';
         fetch(url)
         .then(response => response.json())
         .then(data => {
             transactionData = data;
-			prefillButton.innerHTML = 'Prefill';
+			prefillButton.innerHTML = 'Checklist';
         })
         .catch(error => console.error("Error fetching data:", error));
     };
